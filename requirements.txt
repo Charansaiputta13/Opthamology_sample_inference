@@ -1,0 +1,30 @@
+# Diabetic Retinopathy Classification - Requirements
+# Production dependencies for DR classification system
+# Compatible with Python 3.9+
+
+# Core ML/DL - Using latest stable TensorFlow
+tensorflow>=2.16.0
+numpy>=1.24.0,<2.0.0
+
+# Image Processing
+pillow>=10.0.0
+opencv-python>=4.8.0
+
+# Data Handling
+pandas>=2.0.0
+
+# Visualization
+matplotlib>=3.7.0
+
+# Metrics & Evaluation
+scikit-learn>=1.3.0
+
+# UI
+streamlit>=1.28.0
+
+# Configuration
+python-dotenv>=1.0.0
+
+# Progress Bars
+tqdm>=4.66.0
+

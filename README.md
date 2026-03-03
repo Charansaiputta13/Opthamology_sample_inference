@@ -3,22 +3,26 @@
 A production-ready AI system for automated Diabetic Retinopathy (DR) screening from retinal fundus images using deep learning with explainability.
 
 ![Python](https://img.shields.io/badge/python-3.9+-blue.svg)
-![TensorFlow](https://img.shields.io/badge/TensorFlow-2.15-orange.svg)
-![Streamlit](https://img.shields.io/badge/Streamlit-1.28-red.svg)
-![License](https://img.shields.io/badge/license-MIT-green.svg)
+![PyTorch](https://img.shields.io/badge/PyTorch-2.1+-red.svg)
+![Streamlit](https://img.shields.io/badge/Streamlit-1.28+-green.svg)
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+
+> ⚡ **Status:** PyTorch Migration Complete ✅  
+> Advanced CAM methods (GradCAM, GradCAM++, ScoreCAM, EigenCAM, LayerCAM) now available for explainability
 
 ---
 
 ## 🎯 Features
 
 - **5-Class DR Classification:** No DR, Mild, Moderate, Severe, Proliferative DR (PDR)
+- **PyTorch Backend:** Modern, efficient deep learning framework
 - **Single Image Inference:** Real-time prediction with confidence scoring
 - **Batch Processing:** Process hundreds of images from ZIP files efficiently
-- **Grad-CAM Explainability:** Visual explanations of model decisions
+- **🎨 5 CAM Methods:** GradCAM, GradCAM++, ScoreCAM, EigenCAM, LayerCAM for explainability
 - **Quality Validation:** Automatic blur detection and resolution checks
 - **Confidence Thresholding:** Flag low-confidence predictions for expert review
 - **Production Architecture:** Modular, tested, maintainable codebase
-- **Web Interface:** Beautiful Streamlit UI with 4 specialized tabs
+- **Web Interface:** Beautiful Streamlit UI with interactive visualization
 - **CSV Reports:** Downloadable batch results with detailed metrics
 
 ---
@@ -64,8 +68,8 @@ The app will open in your browser at `http://localhost:8501`
 ```
 Opthamology_sample_inference/
 ├── src/                        # Core application modules
-│   ├── config.py              # Configuration management
-│   ├── model.py               # Model loading & Grad-CAM
+│   ├── config.py              # Configuration management (PyTorch)
+│   ├── model.py               # Model loading & 5 CAM methods
 │   ├── preprocessing.py       # Image preprocessing & quality checks
 │   ├── inference.py           # Single & batch inference
 │   ├── evaluation.py          # Metrics & evaluation
@@ -74,7 +78,7 @@ Opthamology_sample_inference/
 │       └── validation.py      # Input validation
 ├── app.py                      # Streamlit web application
 ├── pretrained/                 # Trained model files
-│   └── dr_mobilenetv2_5class.h5
+│   └── dr_mobilenetv2_5class.pth  # PyTorch model weights
 ├── outputs/                    # Generated outputs
 │   ├── logs/                  # Application logs
 │   ├── predictions/           # Prediction CSVs
@@ -185,9 +189,10 @@ print(f"Cohen's Kappa: {metrics['cohen_kappa']:.3f}")
 | **Architecture** | MobileNetV2 (fine-tuned) |
 | **Input Size** | 224×224 pixels |
 | **Output Classes** | 5 (No DR, Mild, Moderate, Severe, PDR) |
-| **Framework** | TensorFlow 2.15 |
-| **Preprocessing** | MobileNetV2 preprocessing ([-1, 1] normalization) |
-| **Deployment** | CPU-optimized (no GPU required) |
+| **Framework** | **PyTorch 2.1+** |
+| **Preprocessing** | ImageNet normalization (mean/std) |
+| **Deployment** | CPU-optimized (GPU-compatible) |
+| **Model File** | `.pth` (PyTorch state dict) |
 
 ### Class Definitions
 
@@ -352,24 +357,73 @@ This project is provided for educational purposes. See LICENSE file for details.
 
 ---
 
-## 🙏 Acknowledgments
+## 🎨 CAM Explainability Methods
 
-- **TensorFlow Team** - Deep learning framework
+The system supports **5 state-of-the-art CAM methods** for visual explanations:
+
+### 1. **GradCAM** (Gradient-weighted Class Activation Mapping)
+- Uses gradients flowing into the last convolutional layer
+- Fast and widely used for model interpretability
+- Good for understanding spatial attention regions
+
+### 2. **GradCAM++**
+- Improved version of GradCAM with better gradient weighting
+- Provides more fine-grained visualizations
+- Better at handling multiple objects/regions of interest
+
+### 3. **ScoreCAM** (Score-weighted Class Activation Mapping)
+- Doesn't rely on gradients, uses forward pass only
+- More stable and computationally intensive
+- Useful when gradient-based methods are unreliable
+
+### 4. **EigenCAM**
+- Unsupervised version of ScoreCAM
+- Uses principal components of activations
+- Good for general feature visualization
+
+### 5. **LayerCAM**
+- Alternative to GradCAM focusing on activation maps only
+- Minimal gradient dependency
+- Useful for verification of gradient-based methods
+
+### Usage Example
+
+```python
+from src.model import DRClassifier
+from src.preprocessing import preprocess_image, load_image_safe
+
+config = Config()
+model = DRClassifier(config.MODEL_PATH)
+
+# Load and preprocess image
+img_pil = load_image_safe("retina.jpg")
+img_array = preprocess_image(img_pil)
+
+# Compute CAM using different methods
+methods = ["GradCAM", "GradCAM++", "ScoreCAM", "EigenCAM", "LayerCAM"]
+
+for method in methods:
+    heatmap = model.compute_cam(img_array, method=method)
+    overlayed = model.overlay_cam(img_pil, heatmap)
+    fig = model.create_cam_figure(img_pil, heatmap, method=method)
+```
+
+---
+
+## 📊 Acknowledgments
+
+- **PyTorch Team** - Deep learning framework
+- **Torchvision** - Computer vision models
+- **pytorch-grad-cam** - CAM implementations
 - **Streamlit** - Web app framework
 - **Scikit-learn** - Evaluation metrics
 - **OpenCV & PIL** - Image processing
 
 ---
 
-## 📧 Contact
-
-For questions, issues, or improvements, please open an issue on the repository.
-
----
-
 ## 🔑 Keywords
 
-Diabetic Retinopathy, Medical AI, Deep Learning, Computer Vision, Explainable AI, Grad-CAM, MobileNetV2, TensorFlow, Streamlit, Healthcare ML, Medical Imaging, Retinal Imaging, Clinical Decision Support, ML Engineering, Production ML
+Diabetic Retinopathy, Medical AI, PyTorch, Deep Learning, Computer Vision, Explainable AI, CAM, GradCAM, MobileNetV2, Streamlit, Healthcare ML, Medical Imaging, Retinal Imaging, Clinical Decision Support, ML Engineering, Production ML
 
 ---
 

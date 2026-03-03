@@ -2,8 +2,14 @@
 # Production dependencies for DR classification system
 # Compatible with Python 3.9+
 
-# Core ML/DL - Using latest stable TensorFlow
-tensorflow>=2.16.0
+# Core ML/DL - PyTorch (CPU-optimized; swap index URL for GPU builds)
+torch>=2.1.0
+torchvision>=0.16.0
+
+# CAM Explainability (GradCAM, GradCAM++, ScoreCAM, EigenCAM, LayerCAM)
+grad-cam>=1.5.0
+
+# Numerical
 numpy>=1.24.0,<2.0.0
 
 # Image Processing
@@ -27,4 +33,3 @@ python-dotenv>=1.0.0
 
 # Progress Bars
 tqdm>=4.66.0
-

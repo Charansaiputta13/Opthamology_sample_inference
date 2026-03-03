@@ -1,5 +1,5 @@
 """
-Inference orchestration for DR classification.
+Inference orchestration for DR classification (PyTorch backend).
 Handles single image and batch inference with quality checks and error handling.
 """
 
@@ -27,17 +27,20 @@ def predict_single_image(
     img_path: str,
     model: DRClassifier,
     config: Config,
-    gradcam: bool = False
+    gradcam: bool = False,
+    cam_method: Optional[str] = None
 ) -> Dict[str, Any]:
     """
     Predict DR classification for a single image with quality checks.
-    
+
     Args:
         img_path: Path to image file
         model: DRClassifier instance
         config: Configuration object
-        gradcam: Whether to compute Grad-CAM heatmap
-        
+        gradcam: Deprecated; use cam_method instead (kept for backwards compat)
+        cam_method: CAM method name, e.g. 'GradCAM', 'GradCAM++', 'ScoreCAM',
+                    'EigenCAM', 'LayerCAM'. Pass None to skip CAM computation.
+
     Returns:
         Dictionary containing:
             - success: bool
@@ -49,7 +52,8 @@ def predict_single_image(
             - quality_issues: list
             - quality_metrics: dict
             - needs_review: bool
-            - gradcam_heatmap: np.ndarray (if gradcam=True)
+            - cam_heatmap: np.ndarray (if cam_method provided)
+            - cam_method: str (name of method used)
             - error: str (if failed)
     """
     result = {
@@ -99,11 +103,13 @@ def predict_single_image(
             or len(quality_issues) > 0
         )
         
-        # Grad-CAM if requested
-        if gradcam:
-            heatmap = model.compute_gradcam(img_preprocessed, target_class=predicted_class)
-            result['gradcam_heatmap'] = heatmap
-        
+        # CAM explainability — support both old gradcam bool and new cam_method string
+        effective_method = cam_method if cam_method else ("GradCAM" if gradcam else None)
+        if effective_method:
+            heatmap = model.compute_cam(img_preprocessed, method=effective_method, target_class=predicted_class)
+            result['cam_heatmap'] = heatmap
+            result['cam_method'] = effective_method
+
         return result
     
     except Exception as e:

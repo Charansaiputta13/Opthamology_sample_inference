@@ -1,0 +1,79 @@
+version: '3.8'
+
+services:
+  # Main Streamlit application
+  dr-classifier:
+    build: .
+    container_name: dr-classifier
+    ports:
+      - "8501:8501"
+    environment:
+      # Model configuration
+      MODEL_PATH: /app/pretrained/dr_mobilenetv2_5class.pth
+      
+      # Data paths
+      DATA_DIR: /app/data/images
+      OUTPUT_DIR: /app/outputs
+      
+      # Inference settings
+      CONFIDENCE_THRESHOLD: 0.6
+      BLUR_THRESHOLD: 100.0
+      MIN_IMAGE_SIZE: 256
+      BATCH_SIZE: 16
+      
+      # Logging
+      LOG_LEVEL: INFO
+      
+      # CAM visualization
+      DEFAULT_CAM_METHOD: GradCAM
+      CAM_ALPHA: 0.4
+      
+      # Streamlit configuration
+      STREAMLIT_SERVER_PORT: 8501
+      STREAMLIT_SERVER_ADDRESS: 0.0.0.0
+      STREAMLIT_LOGGER_LEVEL: info
+      STREAMLIT_BROWSER_GATHER_USAGE_STATS: false
+      
+    volumes:
+      # Mount data directory for persistence
+      - ./data:/app/data
+      # Mount outputs directory for results
+      - ./outputs:/app/outputs
+      # Optional: Mount .env file
+      - ./.env:/app/.env:ro
+    
+    # Restart policy
+    restart: always
+    
+    # Health check
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8501/_stcore/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    
+    # Resource limits (optional)
+    # Uncomment to limit resource usage
+    # deploy:
+    #   resources:
+    #     limits:
+    #       cpus: '2'
+    #       memory: 2G
+    #     reservations:
+    #       cpus: '1'
+    #       memory: 1G
+
+# Optional: Add database service for future enhancements
+# services:
+#   postgres:
+#     image: postgres:14
+#     environment:
+#       POSTGRES_USER: dr_user
+#       POSTGRES_PASSWORD: secure_password
+#       POSTGRES_DB: dr_classification
+#     volumes:
+#       - postgres_data:/var/lib/postgresql/data
+
+# volumes:
+#   postgres_data:

@@ -1,0 +1,61 @@
+# Git
+.git
+.gitignore
+.github
+
+# Python
+__pycache__
+*.py[cod]
+*$py.class
+*.egg-info
+*.egg
+.Python
+pip-log.txt
+pip-delete-this-directory.txt
+.tox/
+.coverage
+.pytest_cache/
+htmlcov/
+
+# Virtual environments
+venv/
+venv_old/
+.venv/
+.venvproject/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# OS
+Thumbs.db
+.env
+
+# Development
+*.ipynb
+.jupyter/
+notebooks/
+
+# Large files (except model)
+*.zip
+*.tar
+*.tar.gz
+
+# Cache
+*.cache
+*.pkl
+*.pickle
+
+# Logs (except for important ones)
+logs/
+*.log
+
+# Temporary
+temp/
+tmp/
+*.tmp

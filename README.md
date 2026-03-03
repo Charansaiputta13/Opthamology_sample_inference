@@ -12,7 +12,17 @@ A production-ready AI system for automated Diabetic Retinopathy (DR) screening f
 
 ---
 
-## 🎯 Features
+## � Live Demo
+
+**Try the application right now - no installation required!**
+
+👉 **[Launch Live Demo on Streamlit Cloud](https://opthamologysampleinference-p8usjvppwcnpwcnxscxaqv.streamlit.app/)**
+
+Simply click the link above to access the fully functional DR classification system in your browser. Upload retinal images, get predictions, visualize CAM heatmaps, and process batch data - all live!
+
+---
+
+## �🎯 Features
 
 - **5-Class DR Classification:** No DR, Mild, Moderate, Severe, Proliferative DR (PDR)
 - **PyTorch Backend:** Modern, efficient deep learning framework
